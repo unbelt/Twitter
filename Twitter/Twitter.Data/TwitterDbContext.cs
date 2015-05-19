@@ -27,16 +27,13 @@
 
         public DbContext DbContext
         {
-            get
-            {
-                return this;
-            }
+            get { return this; }
         }
 
         public override int SaveChanges()
         {
-            this.ApplyAuditInfoRules();
-            this.ApplyDeletableEntityRules();
+            ApplyAuditInfoRules();
+            ApplyDeletableEntityRules();
             return base.SaveChanges();
         }
 
@@ -54,19 +51,21 @@
         {
             modelBuilder.Conventions.Add(new IsUnicodeAttributeConvention());
 
-            base.OnModelCreating(modelBuilder); // Without this call EntityFramework won't be able to configure the identity model
+            base.OnModelCreating(modelBuilder);
+                // Without this call EntityFramework won't be able to configure the identity model
         }
 
         private void ApplyAuditInfoRules()
         {
             // Approach via @julielerman: http://bit.ly/123661P
             foreach (var entry in
-                this.ChangeTracker.Entries()
+                ChangeTracker.Entries()
                     .Where(
                         e =>
-                        e.Entity is IAuditInfo && ((e.State == EntityState.Added) || (e.State == EntityState.Modified))))
+                            e.Entity is IAuditInfo &&
+                            ((e.State == EntityState.Added) || (e.State == EntityState.Modified))))
             {
-                var entity = (IAuditInfo)entry.Entity;
+                var entity = (IAuditInfo) entry.Entity;
 
                 if (entry.State == EntityState.Added)
                 {
@@ -85,10 +84,10 @@
         private void ApplyDeletableEntityRules()
         {
             // Approach via @julielerman: http://bit.ly/123661P
-            foreach (var entry in this.ChangeTracker.Entries()
-                        .Where(e => e.Entity is IDeletableEntity && (e.State == EntityState.Deleted)))
+            foreach (var entry in ChangeTracker.Entries()
+                .Where(e => e.Entity is IDeletableEntity && (e.State == EntityState.Deleted)))
             {
-                var entity = (IDeletableEntity)entry.Entity;
+                var entity = (IDeletableEntity) entry.Entity;
 
                 entity.DeletedOn = DateTime.Now;
                 entity.IsDeleted = true;

@@ -1,9 +1,12 @@
 ﻿using Microsoft.Owin;
-using Owin;
+using Twitter.Web;
 
-[assembly: OwinStartupAttribute(typeof(Twitter.Web.Startup))]
+[assembly: OwinStartup(typeof(Startup))]
+
 namespace Twitter.Web
 {
+    using Owin;
+
     public partial class Startup
     {
         public void Configuration(IAppBuilder app)

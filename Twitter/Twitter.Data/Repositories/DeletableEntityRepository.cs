@@ -29,7 +29,7 @@
             entity.DeletedOn = DateTime.Now;
             entity.IsDeleted = true;
 
-            var entry = this.Context.Entry(entity);
+            var entry = Context.Entry(entity);
             entry.State = EntityState.Modified;
         }
     }
